@@ -36,7 +36,7 @@ export default function App() {
   const [canvasFrames, setCanvasFrames] = useState<Record<string, CanvasFrame>>({});
   
   // UI States
-  const [view, setView] = useState<'grid' | 'canvas'>('canvas');
+  const [view, setView] = useState<'grid' | 'canvas'>('grid');
   const [gridCols, setGridCols] = useState('auto');
   const [captureInput, setCaptureInput] = useState('');
   const [isIngesting, setIsIngesting] = useState(false);
@@ -46,7 +46,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem('atlas_theme');
     if (saved) return saved === 'dark';
-    return true; // Default to dark mode for the deep dark slate aesthetic
+    return false; // Default to light mode
   });
 
   useEffect(() => {
@@ -54,10 +54,16 @@ export default function App() {
       document.documentElement.classList.add('dark');
       document.documentElement.classList.remove('light');
       localStorage.setItem('atlas_theme', 'dark');
+      
+      const metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+      metaThemeColors.forEach(meta => meta.setAttribute('content', '#000000'));
     } else {
       document.documentElement.classList.remove('dark');
       document.documentElement.classList.add('light');
       localStorage.setItem('atlas_theme', 'light');
+      
+      const metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+      metaThemeColors.forEach(meta => meta.setAttribute('content', '#ffffff'));
     }
   }, [darkMode]);
 
@@ -598,17 +604,15 @@ export default function App() {
         }
       }
 
-      const enrichment = await enrichArchiveData(file.name, '', '');
-
       const newItem: ArchiveItem = {
         id,
         type,
         url: finalUrl,
-        title: enrichment.suggestedTitle || file.name.replace(/\.[^.]+$/, ''),
+        title: file.name.replace(/\.[^.]+$/, ''),
         description: `${file.type || 'local file'} · ${(file.size / 1024).toFixed(0)} KB`,
         thumbnail: thumbUrl,
         domain: 'local upload',
-        tags: enrichment.tags,
+        tags: [],
         collections: [],
         notes: '',
         createdAt: Date.now(),
@@ -960,7 +964,7 @@ export default function App() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col w-full h-[100dvh] select-none overflow-hidden bg-[var(--app-bg)] text-[var(--text)] font-sans antialiased text-sm leading-relaxed"
+          className="flex flex-col w-full h-full select-none overflow-hidden bg-[var(--app-bg)] text-[var(--text)] font-sans antialiased text-sm leading-relaxed"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
