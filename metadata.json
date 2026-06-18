@@ -1,5 +1,5 @@
 {
-  "name": "Visual-Internet-Archive",
+  "name": "visual-internet-archive",
   "description": "A visual internet archive and mood board with real-time sync, interactive canvas, and local file storage.",
   "requestFramePermissions": [],
   "majorCapabilities": [

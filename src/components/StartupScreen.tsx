@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 
+import viasLogo from '../assets/images/vias_logo_1781818754269.jpg';
+
 interface StartupScreenProps {
   onComplete: () => void;
 }
@@ -63,7 +65,7 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({ onComplete }) => {
       initial={{ opacity: 1 }}
       animate={isExiting ? { opacity: 0, scale: 1.05, filter: 'blur(30px)' } : { opacity: 1 }}
       transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-0 z-[10000] bg-[var(--app-bg)] flex flex-col items-center justify-center select-none overflow-hidden"
+      className="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center select-none overflow-hidden"
     >
       {/* Central Composition */}
       <div className="relative flex flex-col items-center z-10 w-full max-w-sm px-12">
@@ -76,24 +78,17 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({ onComplete }) => {
             transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
           >
-            {/* The Logo - Brutalist Stark */}
-            <div className="relative w-40 h-40 md:w-56 md:h-56 flex flex-col items-center justify-center overflow-hidden border-8 border-[var(--text)] bg-[var(--app-bg)] shadow-[8px_8px_0px_var(--text)] dark:shadow-[8px_8px_0px_var(--border-bright)] cursor-default">
-              <motion.div 
-                initial={{ filter: 'blur(10px)', y: 20, opacity: 0 }}
-                animate={{ filter: 'blur(0px)', y: 0, opacity: 1 }}
+// The Logo - Brutalist Stark
+            <div className="relative w-40 h-40 md:w-56 md:h-56 flex items-center justify-center overflow-hidden">
+              <motion.img 
+                initial={{ scale: 1.2, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-                className="text-8xl md:text-9xl font-black tracking-tighter text-[var(--text)] leading-none"
-              >
-                ∞
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 1 }}
-                className="text-xs md:text-sm font-mono font-bold tracking-[0.3em] text-[var(--text)] mt-2 uppercase"
-              >
-                Archive
-              </motion.div>
+                src={viasLogo} 
+                alt="VIAS"
+                className="w-full h-full object-contain mix-blend-screen"
+                draggable={false}
+              />
             </div>
           </motion.div>
         </div>

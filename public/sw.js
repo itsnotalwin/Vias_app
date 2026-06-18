@@ -1,6 +1,6 @@
 const DB_NAME = 'VIAS_ShareTarget';
 const STORE_NAME = 'shared_items';
-const CACHE_NAME = 'vias-v1';
+const CACHE_NAME = 'vias-v3';
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -86,8 +86,25 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. Cache-First Strategy for static assets, Network-First for API/others
+  // 2. Network-First for Navigation, Cache-First for static assets
   if (event.request.method === 'GET') {
+    if (event.request.mode === 'navigate') {
+      event.respondWith(
+        fetch(event.request)
+          .then((networkResponse) => {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+            return networkResponse;
+          })
+          .catch(() => {
+            return caches.match(event.request).then((response) => response || caches.match('/'));
+          })
+      );
+      return;
+    }
+
     event.respondWith(
       caches.match(event.request).then((response) => {
         if (response) return response;

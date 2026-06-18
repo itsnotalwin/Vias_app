@@ -46,7 +46,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem('atlas_theme');
     if (saved) return saved === 'dark';
-    return false; // Default to light mode
+    return true; // Default to dark mode
   });
 
   useEffect(() => {
@@ -75,6 +75,8 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(false); // Using StartupScreen instead
   const [isStartupComplete, setIsStartupComplete] = useState(false);
   const [colonies, setColonies] = useState<Colony[]>([]);
+  const [isClustering, setIsClustering] = useState(false);
+  const [isTagging, setIsTagging] = useState(false);
 
   // Load colonies from local storage
   useEffect(() => {
@@ -103,6 +105,68 @@ export default function App() {
       ...patch
     }));
   }, []);
+
+  const handleAutoCluster = async () => {
+    if (items.length === 0) {
+      addToast("Nothing to cluster. Add items first.");
+      return;
+    }
+    
+    setIsClustering(true);
+    try {
+      const groqKey = localStorage.getItem('vias_groq_key');
+      const response = await fetch('/api/ai/cluster', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, groqKey })
+      });
+      const data = await response.json();
+      if (data.colonies) {
+        setColonies(data.colonies);
+        localStorage.setItem('vias_colonies', JSON.stringify(data.colonies));
+        addToast("Board auto-clustered into logical groups.");
+      } else if (data.error) {
+        addToast(`Cluster error: ${data.error}`);
+      }
+    } catch (e) {
+      addToast("Failed to reach clustering service.");
+    } finally {
+      setIsClustering(false);
+    }
+  };
+
+  const handleAutoTag = async () => {
+    if (items.length === 0) {
+      addToast("Nothing to tag. Add items first.");
+      return;
+    }
+
+    setIsTagging(true);
+    try {
+      const groqKey = localStorage.getItem('vias_groq_key');
+      const response = await fetch('/api/ai/autotag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, groqKey })
+      });
+      const data = await response.json();
+      if (data.tags) {
+        const updatedList = items.map(item => ({
+          ...item,
+          tags: data.tags[item.id] || item.tags || []
+        }));
+        setItems(updatedList);
+        localStorage.setItem('vias_archive', JSON.stringify(updatedList));
+        addToast("Labels successfully generated for board items.");
+      } else if (data.error) {
+        addToast(`Tagging error: ${data.error}`);
+      }
+    } catch (e) {
+      addToast("Failed to reach tagging service.");
+    } finally {
+      setIsTagging(false);
+    }
+  };
 
   // Floating notifications toasts
   const [toasts, setToasts] = useState<Array<{ id: number; msg: string }>>([]);
@@ -964,7 +1028,8 @@ export default function App() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col w-full h-full select-none overflow-hidden bg-[var(--app-bg)] text-[var(--text)] font-sans antialiased text-sm leading-relaxed"
+          className="flex flex-col w-full flex-1 select-none overflow-hidden bg-[var(--app-bg)] text-[var(--text)] font-sans antialiased text-sm leading-relaxed"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -1012,6 +1077,10 @@ export default function App() {
           items={items}
           collections={collections}
           colonies={colonies}
+          isClustering={isClustering}
+          onAutoCluster={handleAutoCluster}
+          isTagging={isTagging}
+          onAutoTag={handleAutoTag}
           filter={filter}
           onFilterChange={handleFilterChange}
           onAddCollection={handleAddCollection}

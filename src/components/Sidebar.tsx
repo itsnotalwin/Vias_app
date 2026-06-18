@@ -317,6 +317,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex flex-col gap-1">
             <div className="px-4 flex items-center justify-between">
               <span className="text-[10px] font-bold tracking-widest text-[var(--text-dim)] uppercase">Colonies</span>
+              <button 
+                onClick={onAutoCluster}
+                disabled={isClustering || items.length === 0}
+                className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[var(--text)]/5 hover:bg-[var(--text)]/10 text-[var(--text)] border border-[var(--border)] transition disabled:opacity-30 disabled:cursor-not-allowed group"
+                title="Use AI to cluster items into logical groups"
+              >
+                {isClustering ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-2.5 h-2.5 group-hover:text-yellow-500 transition-colors" />}
+                <span className="text-[9px] font-bold uppercase tracking-tight">Auto</span>
+              </button>
             </div>
             <div className="flex flex-col">
               {colonies.length === 0 ? (
@@ -354,6 +363,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex flex-col gap-1.5">
             <div className="px-4 flex items-center justify-between">
               <span className="text-[10px] font-bold tracking-widest text-[var(--text-dim)] uppercase">Tags Archive</span>
+              <button 
+                onClick={onAutoTag}
+                disabled={isTagging || items.length === 0}
+                className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[var(--text)]/5 hover:bg-[var(--text)]/10 text-[var(--text)] border border-[var(--border)] transition disabled:opacity-30 disabled:cursor-not-allowed group"
+                title="Use AI to automatically label untagged items"
+              >
+                {isTagging ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-2.5 h-2.5 group-hover:text-cyan-500 transition-colors" />}
+                <span className="text-[9px] font-bold uppercase tracking-tight">Auto</span>
+              </button>
             </div>
             <div className="flex flex-wrap gap-1 px-4 py-1.5 max-h-[140px] overflow-y-auto">
               {sortedTags.length === 0 ? (
