@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
+import { GoogleGenAI } from '@google/genai';
 
 dotenv.config();
 
@@ -540,35 +541,20 @@ app.post('/api/meta', async (req, res) => {
   }
 });
 
-// Groq Helper
-async function callGroq(prompt: string, apiKey: string) {
+// Gemini Helper
+async function callGemini(prompt: string) {
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [
-          { role: 'system', content: 'You are an AI assistant that ONLY responds with valid JSON objects.' },
-          { role: 'user', content: prompt }
-        ],
-        response_format: { type: 'json_object' }
-      })
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+      }
     });
-    
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error(`Groq error ${res.status}:`, errorText);
-      return null;
-    }
-
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content;
+    return response.text;
   } catch (error) {
-    console.error('Groq fetch error:', error);
+    console.error('Gemini fetch error:', error);
     return null;
   }
 }
@@ -594,13 +580,8 @@ Return ONLY a JSON object with this structure:
 Ensure the title is concise and the tags are strictly lowercase.`;
 
   try {
-    const finalGroqKey = groqKey || process.env.GROQ_API_KEY;
-
-    if (!finalGroqKey) {
-      return res.json({ tags: [], suggestedTitle: null, error: 'No Groq API key configured' });
-    }
-
-    const text = await callGroq(prompt, finalGroqKey);
+    // We will just use the server ENV Gemini Key
+    const text = await callGemini(prompt);
     if (text) {
       const parsed = JSON.parse(text);
       return res.json({
@@ -636,13 +617,7 @@ Return ONLY a valid JSON object matching the structure below:
 Do not include any other markdown, pretext, or posttext. Return only raw JSON.`;
 
   try {
-    const finalGroqKey = groqKey || process.env.GROQ_API_KEY;
-
-    if (!finalGroqKey) {
-      return res.json({ tags: {}, error: 'No Groq API key configured' });
-    }
-
-    const text = await callGroq(prompt, finalGroqKey);
+    const text = await callGemini(prompt);
     if (text) {
       const parsed = JSON.parse(text);
       return res.json({
@@ -662,13 +637,7 @@ app.post('/api/ai/search', async (req, res) => {
   const prompt = `You are an intelligent search assistant. Match the user's semantic search query with the items in the list.\nQuery: "${query}"\n\nItems (JSON):\n${JSON.stringify(items)}\n\nReturn a raw JSON object containing an array of matched IDs under the key "matchedIds", sorted by relevance. Return ONLY JSON.`;
 
   try {
-    const finalGroqKey = groqKey || process.env.GROQ_API_KEY;
-
-    if (!finalGroqKey) {
-      return res.json({ matchedIds: [], error: 'No Groq API key configured' });
-    }
-
-    const text = await callGroq(prompt, finalGroqKey);
+    const text = await callGemini(prompt);
     if (text) {
       return res.json(JSON.parse(text));
     } else {
@@ -697,13 +666,7 @@ ${JSON.stringify(items.map((i: any) => ({ id: i.id, title: i.title, type: i.type
 Return ONLY a JSON object with a "colonies" array.`;
 
   try {
-    const finalGroqKey = groqKey || process.env.GROQ_API_KEY;
-
-    if (!finalGroqKey) {
-      return res.json({ colonies: [], error: 'No Groq API key configured' });
-    }
-
-    const text = await callGroq(prompt, finalGroqKey);
+    const text = await callGemini(prompt);
     if (text) {
       return res.json(JSON.parse(text));
     } else {

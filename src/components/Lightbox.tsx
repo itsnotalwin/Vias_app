@@ -142,7 +142,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
       className="fixed inset-0 z-[2000] bg-black/95 backdrop-blur-md flex flex-col justify-between select-none animate-fade-in"
       style={{
         paddingTop: 'env(safe-area-inset-top)',
-        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingBottom: '0px',
         paddingLeft: 'env(safe-area-inset-left)',
         paddingRight: 'env(safe-area-inset-right)'
       }}

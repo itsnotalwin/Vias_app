@@ -122,7 +122,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         `}
         style={{
           paddingTop: 'calc(1rem + env(safe-area-inset-top))',
-          paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))',
+          paddingBottom: '1rem',
           paddingLeft: 'env(safe-area-inset-left)'
         }}
       >
@@ -339,7 +339,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <button
                       key={colony.id}
                       onClick={() => {
-                        onFilterChange({ collection: colony.id, domain: null });
+                        onFilterChange({ collection: colony.id, domain: null, type: 'all' });
                         onClose();
                       }}
                       className={`
@@ -501,7 +501,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Footer info & persistent credits */}
         <div 
           className="px-4 py-4 border-t border-[var(--border)] flex flex-col gap-2 items-center md:items-start select-none"
-          style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 1rem)' }}
+          style={{ paddingBottom: '1rem' }}
         >
           <div className="text-[10px] font-mono text-[var(--text-dim)] text-center md:text-left w-full mt-1">VIAS.OS Archive Ecosystem</div>
           <div className="text-[9px] font-mono text-[var(--text-muted)]/20 text-center md:text-left w-full">v1.2.0 · Offline Sync · Local Storage</div>

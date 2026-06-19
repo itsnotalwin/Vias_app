@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import logoUrl from '../assets/logo.svg';
 
 interface StartupScreenProps {
   onComplete: () => void;
@@ -63,7 +64,7 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({ onComplete }) => {
       initial={{ opacity: 1 }}
       animate={isExiting ? { opacity: 0, scale: 1.05, filter: 'blur(30px)' } : { opacity: 1 }}
       transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-0 z-[10000] bg-white flex flex-col items-center justify-center select-none overflow-hidden"
+      className="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center select-none overflow-hidden"
     >
       {/* Central Composition */}
       <div className="relative flex flex-col items-center z-10 w-full max-w-sm px-12">
@@ -77,14 +78,14 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({ onComplete }) => {
             className="relative"
           >
             {/* The Logo - Brutalist Stark */}
-            <div className="relative w-40 h-40 md:w-56 md:h-56 flex items-center justify-center overflow-hidden">
+            <div className="relative w-40 h-40 md:w-56 md:h-56 flex items-center justify-center p-8 bg-[var(--text)] rounded-3xl overflow-hidden shadow-2xl">
               <motion.img 
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-                src="/logo.jpg" 
+                src={logoUrl} 
                 alt="VIAS"
-                className="w-full h-full object-contain mix-blend-multiply invert"
+                className="w-full h-full object-contain [filter:invert(1)] dark:[filter:invert(0)]"
                 draggable={false}
               />
             </div>
@@ -100,15 +101,15 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({ onComplete }) => {
             className="space-y-4 w-full"
           >
             <div className="flex flex-col gap-1">
-              <h1 className="text-black text-2xl font-black tracking-tighter uppercase leading-none">
+              <h1 className="text-[var(--text)] text-2xl font-black tracking-tighter uppercase leading-none">
                 VIAS ARCHIVE
               </h1>
               <div className="flex justify-between items-center w-full">
-                <span className="text-[9px] font-mono font-bold tracking-widest text-neutral-500 uppercase">Global Indexing</span>
-                <span className="text-[9px] font-mono font-bold text-black">v1.2.0</span>
+                <span className="text-[9px] font-mono font-bold tracking-widest text-[var(--text-muted)] uppercase">Global Indexing</span>
+                <span className="text-[9px] font-mono font-bold text-[var(--text)]">v1.2.0</span>
               </div>
             </div>
-            <div className="h-2 w-full bg-black shadow-[4px_4px_0px_rgba(0,0,0,0.1)]" />
+            <div className="h-2 w-full bg-[var(--text)] shadow-[4px_4px_0px_rgba(0,0,0,0.1)]" />
           </motion.div>
 
           <div className="w-full flex flex-col gap-8">
@@ -122,18 +123,18 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({ onComplete }) => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 5 }}
                     transition={{ duration: 0.3 }}
-                    className="text-[10px] text-black font-mono font-black uppercase tracking-tighter"
+                    className="text-[10px] text-[var(--text)] font-mono font-black uppercase tracking-tighter"
                   >
                     {STATUS_MESSAGES[statusIndex]}
                   </motion.span>
                 </AnimatePresence>
-                <span className="text-xl font-mono text-black font-black tabular-nums">{Math.floor(progress)}%</span>
+                <span className="text-xl font-mono text-[var(--text)] font-black tabular-nums">{Math.floor(progress)}%</span>
               </div>
               
               {/* Minimal Progress Bar */}
-              <div className="w-full h-2 bg-neutral-200 relative overflow-hidden border border-neutral-300">
+              <div className="w-full h-2 bg-[var(--border)] relative overflow-hidden border border-[var(--border-bright)]">
                 <motion.div 
-                  className="absolute left-0 top-0 bottom-0 bg-black"
+                  className="absolute left-0 top-0 bottom-0 bg-[var(--text)]"
                   initial={{ width: "0%" }}
                   animate={{ width: `${progress}%` }}
                   transition={{ ease: "linear" }}
@@ -147,13 +148,12 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({ onComplete }) => {
       {/* Brutalist Fine Print */}
       <div 
         className="absolute bottom-6 left-12 right-12 flex justify-between items-end"
-        style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="flex flex-col gap-1">
-          <span className="text-[8px] font-mono text-neutral-400 uppercase tracking-[0.4em]">Proprietary Visual OS</span>
-          <span className="text-[8px] font-mono text-neutral-500 opacity-50 uppercase tracking-[0.4em]">No Permissions Required</span>
+          <span className="text-[8px] font-mono text-[var(--text-dim)] uppercase tracking-[0.4em]">Proprietary Visual OS</span>
+          <span className="text-[8px] font-mono text-[var(--text-muted)] opacity-50 uppercase tracking-[0.4em]">No Permissions Required</span>
         </div>
-        <div className="text-[8px] font-mono text-neutral-400 text-right font-bold">
+        <div className="text-[8px] font-mono text-[var(--text-dim)] text-right font-bold">
           © 2026 VIAS ECOSYSTEM<br />
           STARK_MODE_ACTIVE
         </div>

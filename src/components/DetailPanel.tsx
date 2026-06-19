@@ -152,7 +152,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
       `}
       style={{
         paddingTop: 'env(safe-area-inset-top)',
-        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingBottom: '0px',
         paddingRight: 'env(safe-area-inset-right)'
       }}
     >

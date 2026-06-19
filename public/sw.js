@@ -1,11 +1,11 @@
 const DB_NAME = 'VIAS_ShareTarget';
 const STORE_NAME = 'shared_items';
-const CACHE_NAME = 'vias-v8';
+const CACHE_NAME = 'vias-v9';
 
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/logo.png',
+  '/logo.svg',
   '/manifest.json'
 ];
 

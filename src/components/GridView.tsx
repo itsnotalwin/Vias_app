@@ -53,7 +53,7 @@ export const GridView: React.FC<GridViewProps> = ({
     <div 
       className="flex-1 overflow-y-auto p-4 md:p-6 bg-[var(--app-bg)]"
       style={{
-        paddingBottom: 'calc(env(safe-area-inset-bottom) + 1.5rem)',
+        paddingBottom: '1.5rem',
         paddingLeft: 'max(env(safe-area-inset-left), 1rem)',
         paddingRight: 'max(env(safe-area-inset-right), 1rem)'
       }}

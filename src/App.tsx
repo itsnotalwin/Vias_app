@@ -121,12 +121,12 @@ export default function App() {
         body: JSON.stringify({ items, groqKey })
       });
       const data = await response.json();
-      if (data.colonies) {
+      if (data.error) {
+        addToast(`Cluster error: ${data.error}`);
+      } else if (data.colonies) {
         setColonies(data.colonies);
         localStorage.setItem('vias_colonies', JSON.stringify(data.colonies));
         addToast("Board auto-clustered into logical groups.");
-      } else if (data.error) {
-        addToast(`Cluster error: ${data.error}`);
       }
     } catch (e) {
       addToast("Failed to reach clustering service.");
@@ -150,7 +150,9 @@ export default function App() {
         body: JSON.stringify({ items, groqKey })
       });
       const data = await response.json();
-      if (data.tags) {
+      if (data.error) {
+        addToast(`Tagging error: ${data.error}`);
+      } else if (data.tags) {
         const updatedList = items.map(item => ({
           ...item,
           tags: data.tags[item.id] || item.tags || []
@@ -158,8 +160,6 @@ export default function App() {
         setItems(updatedList);
         localStorage.setItem('vias_archive', JSON.stringify(updatedList));
         addToast("Labels successfully generated for board items.");
-      } else if (data.error) {
-        addToast(`Tagging error: ${data.error}`);
       }
     } catch (e) {
       addToast("Failed to reach tagging service.");
@@ -856,9 +856,11 @@ export default function App() {
 
     // Filter by collection (or colony)
     if (filter.collection) {
+      const activeColony = colonies.find(c => c.id === filter.collection);
       result = result.filter(x => 
         (x.collections || []).includes(filter.collection!) || 
-        x.colonyId === filter.collection
+        x.colonyId === filter.collection ||
+        (activeColony && activeColony.itemIds.includes(x.id))
       );
     }
 
@@ -1029,7 +1031,7 @@ export default function App() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col w-full flex-1 select-none overflow-hidden bg-[var(--app-bg)] text-[var(--text)] font-sans antialiased text-sm leading-relaxed"
-          style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+          style={{ paddingBottom: '0px' }}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -1222,7 +1224,7 @@ export default function App() {
       {/* Floating active toasts notifier wrap */}
       <div 
         className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2 pointer-events-none select-none items-center"
-        style={{ bottom: 'calc(env(safe-area-inset-bottom) + 1.5rem)' }}
+        style={{ bottom: '1.5rem' }}
       >
         {toasts.map(toast => (
           <div 

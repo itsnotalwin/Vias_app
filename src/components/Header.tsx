@@ -5,6 +5,7 @@ import {
   HelpCircle, Upload, Eye, EyeOff, Loader2, Globe, Sun, Moon, StickyNote
 } from 'lucide-react';
 import { FilterState } from '../types';
+import logoUrl from '../assets/logo.svg';
 
 interface HeaderProps {
   onToggleSidebar: () => void;
@@ -81,11 +82,11 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Brand Logo */}
       <div className="hidden md:flex items-center gap-2 group cursor-pointer select-none mr-4">
-        <div className="w-8 h-8 overflow-hidden bg-white flex items-center justify-center">
+        <div className="w-8 h-8 rounded-sm bg-[var(--text)] flex items-center justify-center">
           <img 
-            src="/logo.jpg" 
+            src={logoUrl} 
             alt="VIAS" 
-            className="w-full h-full object-contain mix-blend-multiply invert" 
+            className="w-5 h-5 object-contain [filter:invert(1)] dark:[filter:invert(0)]" 
           />
         </div>
         <div className="flex flex-col -gap-1">

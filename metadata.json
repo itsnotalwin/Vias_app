@@ -1,6 +1,6 @@
 {
   "name": "visual-internet-archive",
-  "description": "A visual internet archive and mood board with real-time sync, interactive canvas, and local file storage.",
+  "description": "Visual internet archive and mood board.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
