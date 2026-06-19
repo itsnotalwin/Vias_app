@@ -221,7 +221,7 @@ export default function App() {
     if (sharedUrl) {
       setCaptureInput(sharedUrl);
       // Clear params from URL
-      window.history.replaceState({}, '', '/');
+      window.history.replaceState({}, '', window.location.pathname);
     }
 
     // 1. Load Local Fallbacks
